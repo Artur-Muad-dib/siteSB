@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from typing import Optional
 import sqlite3
-
+from urllib.parse import unquote
 app = FastAPI()
 
 # Configuração do CORS
@@ -21,12 +21,13 @@ def read_data(
     tipo_defic: Optional[str] = None,
     idade_min: Optional[int] = None,
     idade_max: Optional[int] = None,
+    n_bairro_a: Optional[str] = None,
 ):
-    conn = sqlite3.connect("PCD.db")
+    conn = sqlite3.connect("my_database.db")
     c = conn.cursor()
 
     params = []
-    sql = "SELECT * FROM PCD"
+    sql = "SELECT * FROM my_table"
 
     if sexo:
         sql += " WHERE sexo = ?"
@@ -43,8 +44,25 @@ def read_data(
     if idade_max is not None:
         sql += (params and " AND" or " WHERE") + " idade <= ?"
         params.append(idade_max)
+    
+    if n_bairro_a and n_bairro_a != "undefined":
+        n_bairro_a = unquote(n_bairro_a)
+        print(f"n_bairro_a: {n_bairro_a}")  # Debug print
+        sql += (params and " AND" or " WHERE") + " n_bairro_a = ?"
+        params.append(n_bairro_a)
+        print(f"SQL query: {sql}")  # Debug print
 
     c.execute(sql, params)
     rows = c.fetchall()
 
     return {"data": rows}
+
+@app.get("/bairros")
+def get_bairros():
+    conn = sqlite3.connect("my_database.db")
+    c = conn.cursor()
+
+    c.execute("SELECT DISTINCT n_bairro_a FROM my_table")
+    bairros = c.fetchall()
+
+    return {"bairros": bairros}

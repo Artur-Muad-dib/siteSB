@@ -8,16 +8,31 @@ var markers = L.layerGroup();
 import municipios from './PE_Municipios_2022.js';
 import bairros from './Bairros_RMR_Sirgas2000.js';
 
+fetch('http://127.0.0.1:8000/bairros')
+    .then(response => response.json())
+    .then(data => {
+        const select = document.getElementById('n_bairro_a');
+        data.bairros.forEach(bairro => {
+            console.log(bairro[0].trim());
+            const bairroName = bairro[0].trim();  // Access the string inside the array and trim it
+            const option = document.createElement('option');
+            option.value = bairroName;
+            option.text = bairroName;
+            select.appendChild(option);
+        });
+    })
+    .catch(error => console.error('Error:', error));
 
 document.getElementById('pessoas').addEventListener('click', function () {
     var idade_min = document.getElementById('idade_min').value;
     var idade_max = document.getElementById('idade_max').value;
     var sexo = document.querySelector('input[name="sexo"]:checked').value;
     var deficiencia = document.querySelector('select[name="deficiencia"]').value;
+    var n_bairro_a = document.getElementById('n_bairro_a').value;
 
 
     var url = new URL('http://localhost:8000/dados');
-    var params = { sexo: sexo, tipo_defic: deficiencia, idade_min: idade_min, idade_max: idade_max };
+    var params = { sexo: sexo, tipo_defic: deficiencia, idade_min: idade_min, idade_max: idade_max, n_bairro_a: n_bairro_a };
     url.search = new URLSearchParams(params).toString();
 
 
@@ -51,25 +66,25 @@ function sucess(pos) {
     }
 }
 
-// ... código anterior ...
 
-// Cria as camadas
+
+
 var municipiosLayer = L.geoJson(municipios);
 var bairrosLayer = L.geoJson(bairros);
 
 function initializeMap(latitude, longitude) {
     map = L.map('map').setView([latitude, longitude], 16);
     markers.clearLayers();
-    
-    // Cria um objeto com as camadas de base
+
+
     var baseLayers = {
         "OpenStreetMap": L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         }),
-        // Adicione aqui outras camadas de base se necessário
+
     };
 
-    // Cria um objeto com as camadas de sobreposição
+
     var overlayLayers = {
         "Municipios": municipiosLayer,
         "Bairros": bairrosLayer,

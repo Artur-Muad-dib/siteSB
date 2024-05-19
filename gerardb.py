@@ -6,7 +6,7 @@ import os
 os.environ['SHAPE_RESTORE_SHX'] = 'YES'
 
 # Ler o arquivo Shapefile com a codificação 'UTF-8'
-gdf = gpd.read_file('Bairros_RMR_Sirgas2000.shp', encoding='UTF-8')
+gdf = gpd.read_file('../PCD_RMR_Bairros/PCD_Total_Bairros_RMR.shp', encoding='UTF-8')
 
 # Converter a coluna de geometria para WKT
 gdf['geometry'] = gdf['geometry'].apply(lambda x: x.wkt)
