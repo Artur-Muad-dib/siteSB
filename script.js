@@ -64,6 +64,36 @@ function sucess(pos) {
         map.remove()
         initializeMap(pos.coords.latitude, pos.coords.longitude);
     }
+    L.marker([pos.coords.latitude, pos.coords.longitude], {icon: L.divIcon({className: 'css-icon', html: '<div class="gps_ring"></div>'})}).addTo(map);
+    var circle = L.circle([pos.coords.latitude, pos.coords.longitude], {
+        color: 'red',      // Define a cor da borda do círculo
+        fillColor: '#f03', // Define a cor de preenchimento do círculo
+        fillOpacity: 0.1,  // Define a opacidade do preenchimento do círculo
+        radius: 450        // Define o raio do círculo em metros
+    }).addTo(map);
+    fetch('http://localhost:8000/ponibus')
+    .then(response => response.json())
+    .then(data => {
+        data.data.forEach(item => {
+            // Extrai as coordenadas do ponto
+            var pointCoords = item[0].replace("POINT (", "").replace(")", "").split(" ").map(Number).reverse();
+
+            // Cria um objeto LatLng para o ponto
+            var point = L.latLng(pointCoords);
+
+            // Calcula a distância entre o ponto e o centro do círculo
+            var distance = circle.getLatLng().distanceTo(point);
+
+            // Verifica se o ponto está dentro do círculo
+            if (distance <= circle.getRadius()) {
+                var marker = L.marker(pointCoords);
+                markers.addLayer(marker);
+            }
+        });
+
+        markers.addTo(map);
+    })
+    .catch(error => console.error('Error:', error));
 }
 
 

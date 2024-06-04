@@ -3,6 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from typing import Optional
 import sqlite3
 from urllib.parse import unquote
+
 app = FastAPI()
 
 # Configuração do CORS
@@ -44,7 +45,7 @@ def read_data(
     if idade_max is not None:
         sql += (params and " AND" or " WHERE") + " idade <= ?"
         params.append(idade_max)
-    
+
     if n_bairro_a and n_bairro_a != "undefined":
         n_bairro_a = unquote(n_bairro_a)
         print(f"n_bairro_a: {n_bairro_a}")  # Debug print
@@ -57,6 +58,7 @@ def read_data(
 
     return {"data": rows}
 
+
 @app.get("/bairros")
 def get_bairros():
     conn = sqlite3.connect("my_database.db")
@@ -66,3 +68,14 @@ def get_bairros():
     bairros = c.fetchall()
 
     return {"bairros": bairros}
+
+
+@app.get("/ponibus")
+def get_ponibus():
+    conn = sqlite3.connect("my_database.db")
+    c = conn.cursor()
+
+    c.execute("SELECT geometry FROM ponibus")
+    rows = c.fetchall()
+    
+    return {"data": rows}

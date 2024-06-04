@@ -214,3 +214,11 @@ input[type="number"] {
     border-radius: 15px;
     /* Adiciona bordas arredondadas */
 }
+.css-icon {
+    background-color: #f00;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    position: relative;
+}
+
