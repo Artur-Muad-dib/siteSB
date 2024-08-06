@@ -3,7 +3,30 @@ from fastapi.middleware.cors import CORSMiddleware
 from typing import Optional
 import sqlite3
 from urllib.parse import unquote
+"""import sqlite3
 
+def create_user_table():
+    conn = sqlite3.connect("my_database.db")
+    c = conn.cursor()
+    c.execute('''CREATE TABLE IF NOT EXISTS users (
+                    id INTEGER PRIMARY KEY,
+                    username TEXT UNIQUE NOT NULL,
+                    hashed_password TEXT NOT NULL
+                )''')
+    conn.commit()
+    conn.close()
+
+create_user_table()
+app = FastAPI()
+
+# Configuração do CORS
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Permite solicitações de todas as origens
+    allow_credentials=True,
+    allow_methods=["*"],  # Permite todos os métodos
+    allow_headers=["*"],  # Permite todos os cabeçalhos
+)"""
 app = FastAPI()
 
 # Configuração do CORS
