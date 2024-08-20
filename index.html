@@ -128,21 +128,22 @@
 
 <body>
 
-    <header> <img src="assets/logosimplificado.png" alt="Minha Figura" id="logo">
+    <header>
+        <img src="assets/logosimplificado.png" alt="Minha Figura" id="logo">
         <h1>Sigabem: apoio ao embarque</h1>
     </header>
     <div class="login-container">
         <h2>Login</h2>
         <div>
-
-            <input type="text" placeholder="CPF">
-            <input type="password" placeholder="Senha">
-            <a href="mapa.html" class="login-button">Entrar</a>
+            <input type="text" id="cpf" placeholder="CPF">
+            <input type="password" id="senha" placeholder="Senha">
+            <button id="login-button">Entrar</button>
         </div>
         <div class="forgot-password">
             <a href="#">Esqueceu sua senha?</a>
         </div>
     </div>
+    <script src="login.js"></script>
     
 </body>
 

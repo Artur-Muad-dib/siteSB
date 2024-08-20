@@ -1,7 +1,8 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from typing import Optional
 import sqlite3
+from pydantic import BaseModel
 from urllib.parse import unquote
 
 app = FastAPI()
@@ -14,6 +15,25 @@ app.add_middleware(
     allow_methods=["*"],  # Permite todos os métodos
     allow_headers=["*"],  # Permite todos os cabeçalhos
 )
+
+class LoginRequest(BaseModel):
+    cpf: str
+    senha: str
+
+@app.post("/login")
+def login(request: LoginRequest):
+    conn = sqlite3.connect("PCD.db")
+    c = conn.cursor()
+
+    c.execute(
+        "SELECT * FROM users WHERE cpf = ? AND senha = ?", (request.cpf, request.senha)
+    )
+    user = c.fetchone()
+
+    if user:
+        return {"message": "Login successful"}
+    else:
+        raise HTTPException(status_code=400, detail=" CPF ou senha incorretos")
 
 
 @app.get("/dados")
@@ -77,5 +97,7 @@ def get_ponibus():
 
     c.execute("SELECT geometry FROM ponibus")
     rows = c.fetchall()
-    
+
     return {"data": rows}
+
+
